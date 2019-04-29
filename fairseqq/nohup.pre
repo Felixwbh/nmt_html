@@ -1,0 +1,14 @@
+Namespace(alignfile=None, destdir='data-bin/180w_wmt_e_c', joined_dictionary=False, nwordssrc=40000, nwordstgt=40000, only_source=False, output_format='binary', padding_factor=8, source_lang='e', srcdict=None, target_lang='c', testpref='zh-en-data-180w/test//mt04/test', tgtdict=None, thresholdsrc=0, thresholdtgt=0, trainpref='zh-en-data-180w/train/train', validpref='zh-en-data-180w/valid/valid', workers=1)
+| [e] Dictionary: 39999 types
+| [e] zh-en-data-180w/train/train.e: 1858452 sents, 47250949 tokens, 0.728% replaced by <unk>
+| [e] Dictionary: 39999 types
+| [e] zh-en-data-180w/valid/valid.e: 1664 sents, 48020 tokens, 1.34% replaced by <unk>
+| [e] Dictionary: 39999 types
+| [e] zh-en-data-180w/test//mt04/test.e: 1788 sents, 62168 tokens, 1.07% replaced by <unk>
+| [c] Dictionary: 39999 types
+| [c] zh-en-data-180w/train/train.c: 1858452 sents, 41290860 tokens, 1.74% replaced by <unk>
+| [c] Dictionary: 39999 types
+| [c] zh-en-data-180w/valid/valid.c: 1664 sents, 38800 tokens, 2.75% replaced by <unk>
+| [c] Dictionary: 39999 types
+| [c] zh-en-data-180w/test//mt04/test.c: 1788 sents, 49523 tokens, 2.0% replaced by <unk>
+| Wrote preprocessed data to data-bin/180w_wmt_e_c
