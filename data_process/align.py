@@ -39,6 +39,18 @@ def salign():
     fline = ' '.join([fast]+fset)
     rline = ' '.join([fast]+rset)
     aline = ' '.join([atools]+aset)
-    os.system(fline)
-    os.system(rline)
-    os.system(aline)
+    fproc = subprocess.Popen(fline, shell=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+    rproc = subprocess.Popen(rline, shell=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+
+
+def salign2():
+    atools = r'./fast_align/build/atools'
+    aset = ['-i ./fast_align/forward.align -j ./fast_align/reverse.align -c grow-diag-final-and > ./fast_align/final.align']
+    aline = ' '.join([atools]+aset)
+    aproc = subprocess.Popen(aline, shell=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+    aproc.communicate()
+
+
+if __name__ == "__main__":
+    salign()
+    salign2()
