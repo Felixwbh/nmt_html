@@ -35,7 +35,6 @@ def login():
         nalign = results[0].alignments[0]
         #print(repr(results))
         salign()
-
         delete()
         return jsonify({
             'status': "ok",
@@ -45,6 +44,14 @@ def login():
     else:
         return abort(403)
 
+    
+@app.route('/salign', methods=['GET'])
+def acc_align():
+    if request.method == 'GET':
+        salign2()
+        return jsonify({
+            'status': "ok",
+        })
 
 
 if __name__ == '__main__':
