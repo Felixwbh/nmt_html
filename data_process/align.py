@@ -32,7 +32,7 @@ def salign():
                 f1.write(' ||| ')
                 f1.write(line2)
     fast = r'./fast_align/build/fast_align'
-	atools = r'./fast_align/build/atools'
+    atools = r'./fast_align/build/atools'
     fset = ['-i ./fast_align/fast.c-e -d -o -v > ./fast_align/forward.align']
     rset = ['-i ./fast_align/fast.c-e -d -o -v -r > ./fast_align/reverse.align']
     aset = ['-i ./fast_align/forward.align -j ./fast_align/reverse.align -c grow-diag-final-and > ./fast_align/final.align']
