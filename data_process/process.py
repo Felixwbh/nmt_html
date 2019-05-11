@@ -41,3 +41,41 @@ def preprocess(input: str) -> str:
             sentence += strr[word] + " "
         word += 1
     return sentence.strip()
+
+
+def backprocess(input:str) -> str:
+    traval = input.strip().split()
+    ali = open('./fast_align/final.align', 'r', encoding = 'UTF-8')
+    strr = ali.readlines()[9999]
+    print(strr)
+    test = []
+    print(traval)
+    for i in range(0, len(traval)):
+        test.append([])
+    print(val)
+    for vall in val:
+        tmpval = []
+        tmpval.append(vall[0])
+        for i in vall[2:]:
+            for align in strr.split():
+                tmp = align.split('-')
+                tmp1 =tmp[0]
+                tmp2 =tmp[1]
+                print("i")
+                print(i)
+                print("tmp")
+                print(tmp)
+                if int(i) == int(tmp1) :
+                    print(tmpval)
+                    print(test)
+                    if tmpval[0] not in test[int(tmp2)]:
+                        test[int(tmp2)].append(tmpval[0])
+    for i in range(0, len(test)):
+        if test[i] == []:
+            print(traval[i]+" ",end='')
+        else:
+            for j in range(0, len(test[i])):
+                print("< " + test[i][j] + " > ",end='')
+            print(traval[i],end='')
+            for j in range(len(test[i])-1, -1, -1):
+                print("< / " + test[i][j] + " > ",end='')
