@@ -2,7 +2,7 @@
 
 import sqlite3
 import bcrypt
-from flask import Flask, request, abort, jsonify, session
+from flask import Flask, request, abort, jsonify, session, g
 from flask_cors import CORS
 from data_process.process import *
 from data_process.align import *
@@ -25,7 +25,7 @@ def hello_world():
 
 
 @app.route('/translate', methods=['POST'])
-def login():
+def handle_translate():
     if request.method == 'POST':
         data = request.get_json()
         my_input = data['input']
