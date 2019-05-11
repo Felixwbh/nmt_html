@@ -18,16 +18,17 @@ def hello_world():
 def login():
     if request.method == 'POST':
         # get input from request
-        input = request.form['input']
+        myinput = request.form['input']
 
         # preprocess ok
-        pre_input = preprocess(input)
+        pre_input = preprocess(myinput)
 
         # translate
         # trans_output = translate(my_model, pre_input)
         results = translate(task, align_dict, models, tgt_dict, translator, args, use_cuda, pre_input)
         pre_trans = results[0].hypos[0].split('\t')[2]
 
+        trans = pre_trans
         #print(pre_input)
         #print(pre_trans)
         # postprocess
@@ -35,24 +36,26 @@ def login():
         nalign = results[0].alignments[0]
         #print(repr(results))
         salign()
+
         delete()
         return jsonify({
             'status': "ok",
             'code': 200,
-            'data': results[0].hypos,
+            'data': pre_trans,
         })
     else:
         return abort(403)
 
-    
-@app.route('/salign', methods=['GET'])
+@app.route('/align', methods=['POST'])
 def acc_align():
-    if request.method == 'GET':
+    if request.method == 'POST':
         salign2()
+        trans = request.form['translation']
+        back_trans = backprocess(trans)
+        print(back_trans)
         return jsonify({
             'status': "ok",
         })
 
-
 if __name__ == '__main__':
-    app.run()
+    app.run(host='127.0.0.1', port=5000)
