@@ -231,6 +231,21 @@ def handle_translatehtml():
             break
 
         def tranhtml(pretrans,ans):
+            pre_input = []
+            results = []
+            print(len(pretrans))
+            for sen in range(0,len(pretrans)):
+                pre_input.append(preprocess1(pretrans[sen]))
+            print(len(pre_input))
+            for sen in range(0,len(pre_input)):
+                results.append(translate(task, align_dict, models, tgt_dict, translator, args, use_cuda, sen))
+            print(len(results))
+            y = 0
+            for x in ans:
+                if x == 1:
+                    x = results[y]
+                    y += 1
+            return ans
             #pre_input = preprocess(pretrans)
             #results=translate(pre_input)
             #add()
@@ -239,7 +254,15 @@ def handle_translatehtml():
 
         print(len(pretrans))
         print(pretrans)
-        tranhtml(pretrans, ans)
+        end = tranhtml(pretrans, ans)
+        return jsonify(
+            result=True,
+            code=200,
+            msg="对齐成功",
+            data=end,
+        )
+    else:
+        return abort(403)
 
 # ================== Auth ==================
 
