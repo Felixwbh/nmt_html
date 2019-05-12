@@ -25,7 +25,7 @@ def hello_world():
     return 'Hello World!'
 
 @app.route('/translatece', methods=['POST'])
-def handle_translatecetag():
+def handle_translatece():
     if request.method == 'POST':
         data = request.get_json()
         my_input = data['input']
@@ -56,8 +56,8 @@ def handle_translatecetag():
         my_input = data['input']
 
         # preprocess
-        pre_input = preprocess(my_input)
-
+        pre_input, val = preprocess(my_input)
+        session['val'] = val
         # translate
         results = translate(task, align_dict, models, tgt_dict, translator, args, use_cuda, pre_input)
         pre_trans = results[0].hypos[0].split('\t')[2]
@@ -109,8 +109,8 @@ def handle_translateectag():
         my_input = data['input']
 
         # preprocess
-        pre_input = preprocess(my_input)
-
+        pre_input, val = preprocess(my_input)
+        session['val'] = val
         # translate
         results = translate(task1, align_dict1, models1, tgt_dict1, translator1, args1, use_cuda1, pre_input)
         pre_trans = results[0].hypos[0].split('\t')[2]
@@ -138,7 +138,8 @@ def acc_align():
         trans = data['translation']
 
         salign2()
-        back_trans = backprocess(trans)
+        val = session['val']
+        back_trans = backprocess(trans, val)
         # print(back_trans)
 
         return jsonify(
@@ -263,6 +264,7 @@ def handle_translatehtml():
         )
     else:
         return abort(403)
+
 
 # ================== Auth ==================
 
