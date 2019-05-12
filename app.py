@@ -208,14 +208,16 @@ def handle_translatehtml():
                         answer.write('>')
                         ans.append('>')
                     i += 1
-                    if i == len(test):
-                        continue
-                    while (test[i] == ' ' or test[i] == '\n'):
+                    if i >= len(test):
+                        break
+                    while (test[i] == ' ' or test[i] == '\n' or test[i] == '\t'):
                         answer.write(test[i])
                         ans.append(test[i])
                         i += 1
-                        if i == len(test):
-                            continue
+                        if i >= len(test):
+                            break
+                    if i >= len(test):
+                        break
                     if test[i] == '<' or test[i] == '.':
                         continue
                     else:
@@ -234,27 +236,37 @@ def handle_translatehtml():
         def tranhtml(pretrans,ans):
             pre_input = []
             results = []
-            print(len(pretrans))
+            #print(len(pretrans))
+            #print(pretrans)
             for sen in range(0,len(pretrans)):
                 pre_input.append(preprocess1(pretrans[sen]))
-            print(len(pre_input))
+            #print(pre_input)
+            #print(len(pre_input))
             for sen in range(0,len(pre_input)):
-                results.append(translate(task, align_dict, models, tgt_dict, translator, args, use_cuda, sen))
-            print(len(results))
+                print(pre_input[sen])
+                result = translate(task, align_dict, models, tgt_dict, translator, args, use_cuda, pre_input[sen])
+                print(result)
+                results.append(result[0].hypos[0].split('\t')[2])
+            print("results!!!!!!!!!!!")
+            print(results)
+            #print(len(results))
             y = 0
-            for x in ans:
-                if x == 1:
-                    x = results[y]
+            ans1 =""
+            for x in range(0, len(ans)):
+                if ans[x] == 1:
+                    ans[x] = results[y]
                     y += 1
-            return ans
+            for x in ans:
+                ans1 += str(x)
+            return ans1
             #pre_input = preprocess(pretrans)
             #results=translate(pre_input)
             #add()
             #salign()
             #delete()
 
-        print(len(pretrans))
-        print(pretrans)
+        #print(len(pretrans))
+        #print(pretrans)
         end = tranhtml(pretrans, ans)
         return jsonify(
             result=True,
