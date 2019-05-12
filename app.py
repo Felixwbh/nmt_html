@@ -6,7 +6,7 @@ from flask import Flask, request, abort, jsonify, session, g
 from flask_cors import CORS
 from data_process.process import *
 from data_process.align import *
-from fairseqq.interactive_new import load_model, translate
+from fairseqq.interactive_new import load_model, load_model1, translate
 
 app = Flask(__name__)
 CORS(app, supports_credentials=True)
@@ -17,36 +17,108 @@ DATABASE = './app.db'
 
 # preload model
 task, align_dict, models, tgt_dict, translator, use_cuda, args = load_model()
+task1, align_dict1, models1, tgt_dict1, translator1, use_cuda1, args1 = load_model1()
 
 
 @app.route('/')
 def hello_world():
     return 'Hello World!'
 
-
-@app.route('/translate', methods=['POST'])
-def handle_translate():
+@app.route('/translatece', methods=['POST'])
+def handle_translatecetag():
     if request.method == 'POST':
         data = request.get_json()
         my_input = data['input']
 
-        # preprocess ok
-        pre_input = preprocess(my_input)
+        # preprocess
+        pre_input = preprocess1(my_input)
 
         # translate
-        # trans_output = translate(my_model, pre_input)
         results = translate(task, align_dict, models, tgt_dict, translator, args, use_cuda, pre_input)
         pre_trans = results[0].hypos[0].split('\t')[2]
 
-        trans = pre_trans
-        # print(pre_input)
-        # print(pre_trans)
+        # postprocess
+        #nalign = results[0].alignments[0]
+
+        return jsonify(
+            result=True,
+            code=200,
+            msg="翻译成功",
+            data=pre_trans,
+        )
+    else:
+        return abort(403)
+
+@app.route('/translatecetag', methods=['POST'])
+def handle_translatecetag():
+    if request.method == 'POST':
+        data = request.get_json()
+        my_input = data['input']
+
+        # preprocess
+        pre_input = preprocess(my_input)
+
+        # translate
+        results = translate(task, align_dict, models, tgt_dict, translator, args, use_cuda, pre_input)
+        pre_trans = results[0].hypos[0].split('\t')[2]
+
         # postprocess
         add(pre_input, pre_trans)
         nalign = results[0].alignments[0]
-        # print(repr(results))
         salign()
+        delete()
 
+        return jsonify(
+            result=True,
+            code=200,
+            msg="翻译成功",
+            data=pre_trans,
+        )
+    else:
+        return abort(403)
+
+@app.route('/translateec', methods=['POST'])
+def handle_translateec():
+    if request.method == 'POST':
+        data = request.get_json()
+        my_input = data['input']
+
+        # preprocess
+        pre_input = preprocess1(my_input)
+
+        # translate
+        results = translate(task1, align_dict1, models1, tgt_dict1, translator1, args1, use_cuda1, pre_input)
+        pre_trans = results[0].hypos[0].split('\t')[2]
+
+        # postprocess
+        #nalign = results[0].alignments[0]
+
+        return jsonify(
+            result=True,
+            code=200,
+            msg="翻译成功",
+            data=pre_trans,
+        )
+    else:
+        return abort(403)
+
+@app.route('/translateectag', methods=['POST'])
+def handle_translateectag():
+    if request.method == 'POST':
+        data = request.get_json()
+        my_input = data['input']
+
+        # preprocess
+        pre_input = preprocess(my_input)
+
+        # translate
+        results = translate(task1, align_dict1, models1, tgt_dict1, translator1, args1, use_cuda1, pre_input)
+        pre_trans = results[0].hypos[0].split('\t')[2]
+
+        # postprocess
+        add1(pre_input, pre_trans)
+        nalign = results[0].alignments[0]
+        salign1()
         delete()
 
         return jsonify(
@@ -78,6 +150,96 @@ def acc_align():
     else:
         return abort(403)
 
+@app.route('/translatehtml', methods=['POST'])
+def handle_translatehtml():
+    if request.method == 'POST':
+        data = request.get_json()
+        test = data['input']
+        pretrans = []
+        ans = []
+        answer = open('answer.html', 'w', encoding='utf-8')
+        def findsentesnce(i):
+            num = i
+            sentence = ""
+            while test[i] != '<':
+                sentence += test[i]
+                i += 1
+            # print(sentence)
+            pretrans.append(sentence)
+            translate = sentence
+            ans.append(int(1))
+            answer.write(translate)
+            return i - num
+
+        def find(i):
+            while (i < len(test)):
+                if test[i] != '>':
+                    answer.write(test[i])
+                    ans.append(test[i])
+                    i += 1
+                else:
+                    answer.write('>')
+                    ans.append('>')
+                    j = i
+                    while (test[j] != '<'):
+                        j -= 1
+                    if (test[j] == '<' and test[j + 1] == 's' and test[j + 2] == 'c' and test[j + 3] == 'r' and test[
+                        j + 4] == 'i' and test[j + 5] == 'p' and test[j + 6] == 't'):
+                        # if(test[i-7]=='<' and test[i-6] == 's' and test[i-5] == 'c' and test[i-4] == 'r' and test[i-3] == 'i' and test[i-2] == 'p' and test[i-1] == 't'):
+                        i += 1
+                        while (test[i - 8] != '<' or test[i - 7] != '/' or test[i - 6] != 's' or test[i - 5] != 'c' or
+                               test[i - 4] != 'r' or test[i - 3] != 'i' or test[i - 2] != 'p' or test[i - 1] != 't'):
+                            answer.write(test[i])
+                            ans.append(test[i])
+                            i += 1
+                        answer.write('>')
+                        ans.append('>')
+                    if (test[j] == '<' and test[j + 1] == 'n' and test[j + 2] == 'o' and test[j + 3] == 's' and test[
+                        j + 4] == 'c' and test[j + 5] == 'r' and test[j + 6] == 'i' and test[j + 7] == 'p' and test[
+                        j + 8] == 't'):
+                        i += 1
+                        while (test[i - 10] != '<' or test[i - 9] != '/' or test[i - 8] != 'n' or test[i - 7] != 'o' or
+                               test[i - 6] != 's' or test[i - 5] != 'c' or test[i - 4] != 'r' or test[i - 3] != 'i' or
+                               test[i - 2] != 'p' or test[i - 1] != 't'):
+                            answer.write(test[i])
+                            ans.append(test[i])
+                            i += 1
+                        answer.write('>')
+                        ans.append('>')
+                    i += 1
+                    if i == len(test):
+                        continue
+                    while (test[i] == ' ' or test[i] == '\n'):
+                        answer.write(test[i])
+                        ans.append(test[i])
+                        i += 1
+                        if i == len(test):
+                            continue
+                    if test[i] == '<' or test[i] == '.':
+                        continue
+                    else:
+                        num = findsentesnce(i)
+                        i += num
+
+        for j in range(0, len(test)):
+            while (test[j] != '<' or test[j + 1] != 'b' or test[j + 2] != 'o' or test[j + 3] != 'd' or test[
+                j + 4] != 'y' or test[j + 5] != '>'):
+                answer.write(test[j])
+                ans.append(test[j])
+                j += 1
+            find(j)
+            break
+
+        def tranhtml(pretrans,ans):
+            #pre_input = preprocess(pretrans)
+            #results=translate(pre_input)
+            #add()
+            #salign()
+            #delete()
+
+        print(len(pretrans))
+        print(pretrans)
+        tranhtml(pretrans, ans)
 
 # ================== Auth ==================
 
