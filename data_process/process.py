@@ -1,5 +1,12 @@
 import jieba
 
+def preprocess1(input: str) -> str:
+    strr = list(jieba.cut(input))
+    sentence = ""
+    for word in strr:
+        sentence += str(word)+" "
+    return sentence.strip()
+
 def preprocess(input: str) -> str:
     val = []
     strr = list(jieba.cut(input))
