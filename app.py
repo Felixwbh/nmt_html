@@ -143,8 +143,6 @@ def acc_align():
         # print(back_trans)
 
         return jsonify(
-            result=True,
-            code=200,
             msg="对齐成功",
             data=back_trans,
         )
@@ -186,7 +184,6 @@ def handle_translatehtml():
                         j -= 1
                     if (test[j] == '<' and test[j + 1] == 's' and test[j + 2] == 'c' and test[j + 3] == 'r' and test[
                         j + 4] == 'i' and test[j + 5] == 'p' and test[j + 6] == 't'):
-                        # if(test[i-7]=='<' and test[i-6] == 's' and test[i-5] == 'c' and test[i-4] == 'r' and test[i-3] == 'i' and test[i-2] == 'p' and test[i-1] == 't'):
                         i += 1
                         while (test[i - 8] != '<' or test[i - 7] != '/' or test[i - 6] != 's' or test[i - 5] != 'c' or
                                test[i - 4] != 'r' or test[i - 3] != 'i' or test[i - 2] != 'p' or test[i - 1] != 't'):
@@ -276,7 +273,6 @@ def handle_translatehtml():
         )
     else:
         return abort(403)
-
 
 # ================== Auth ==================
 
