@@ -233,6 +233,7 @@ def handle_translatehtml():
         def tranhtml(pretrans,ans):
             pre_input = []
             results = []
+            prealign = []
             #print(len(pretrans))
             #print(pretrans)
             for sen in range(0,len(pretrans)):
@@ -240,12 +241,17 @@ def handle_translatehtml():
             #print(pre_input)
             #print(len(pre_input))
             for sen in range(0,len(pre_input)):
-                print(pre_input[sen])
+                #print(pre_input[sen])
                 result = translate(task, align_dict, models, tgt_dict, translator, args, use_cuda, pre_input[sen])
-                print(result)
-                results.append(result[0].hypos[0].split('\t')[2])
-            print("results!!!!!!!!!!!")
-            print(results)
+                #print(result)
+                tmp = result[0].hypos[0].split('\t')[2]
+                results.append(tmp)
+                tmpstring = ""
+                tmpstring += str(pre_input[sen]) + "|||" + str(tmp)
+                prealign.append(tmpstring)
+            print(prealign)
+            batchalign = align_batch(prealign)
+            print(batchalign)
             #print(len(results))
             y = 0
             ans1 =""
