@@ -7,6 +7,8 @@ from flask_cors import CORS
 from data_process.process import *
 from data_process.align import *
 from fairseqq.interactive_new import load_model, load_model1, translate
+from fast_align.build.test import *
+from datetime import datetime, date
 
 app = Flask(__name__)
 CORS(app, supports_credentials=True)
@@ -40,6 +42,8 @@ def handle_translatece():
         # postprocess
         #nalign = results[0].alignments[0]
 
+        save_translation_history(my_input, pre_trans)
+
         return jsonify(
             result=True,
             code=200,
@@ -68,6 +72,8 @@ def handle_translatecetag():
         salign()
         delete()
 
+        save_translation_history(my_input, pre_trans)
+
         return jsonify(
             result=True,
             code=200,
@@ -92,6 +98,8 @@ def handle_translateec():
 
         # postprocess
         #nalign = results[0].alignments[0]
+
+        save_translation_history(my_input, pre_trans)
 
         return jsonify(
             result=True,
@@ -121,6 +129,8 @@ def handle_translateectag():
         salign1()
         delete()
 
+        save_translation_history(my_input, pre_trans)
+
         return jsonify(
             result=True,
             code=200,
@@ -142,7 +152,11 @@ def acc_align():
         back_trans = backprocess(trans, val)
         # print(back_trans)
 
+        save_align_history(trans, back_trans)
+
         return jsonify(
+            result=True,
+            code=200,
             msg="对齐成功",
             data=back_trans,
         )
@@ -184,6 +198,7 @@ def handle_translatehtml():
                         j -= 1
                     if (test[j] == '<' and test[j + 1] == 's' and test[j + 2] == 'c' and test[j + 3] == 'r' and test[
                         j + 4] == 'i' and test[j + 5] == 'p' and test[j + 6] == 't'):
+                        # if(test[i-7]=='<' and test[i-6] == 's' and test[i-5] == 'c' and test[i-4] == 'r' and test[i-3] == 'i' and test[i-2] == 'p' and test[i-1] == 't'):
                         i += 1
                         while (test[i - 8] != '<' or test[i - 7] != '/' or test[i - 6] != 's' or test[i - 5] != 'c' or
                                test[i - 4] != 'r' or test[i - 3] != 'i' or test[i - 2] != 'p' or test[i - 1] != 't'):
@@ -223,7 +238,7 @@ def handle_translatehtml():
 
         for j in range(0, len(test)):
             while (test[j] != '<' or test[j + 1] != 'b' or test[j + 2] != 'o' or test[j + 3] != 'd' or test[
-                j + 4] != 'y' or test[j + 5] != '>'):
+                j + 4] != 'y' ):
                 answer.write(test[j])
                 ans.append(test[j])
                 j += 1
@@ -330,6 +345,31 @@ def init_db():
         db.commit()
 
 
+def save_translation_history(source, target):
+    if 'username' not in session or 'uid' not in session:
+        return
+
+    uid = session['uid']
+    rst = insert_db(
+        '''INSERT INTO translations (user_id, source, target, created_at) VALUES (?, ?, ?, ?)''',
+        args=(uid, source, target, datetime.now()),
+    )
+    return
+
+
+def save_align_history(translation, align):
+    if 'username' not in session or 'uid' not in session:
+        return
+
+    uid = session['uid']
+    rst = insert_db(
+        '''UPDATE translations SET target=?, created_at=?
+         WHERE user_id=? AND target=?''',
+        args=(align, datetime.now(), uid, translation),
+    )
+    return
+
+
 @app.teardown_appcontext
 def close_connection(exception):
     db = getattr(g, '_database', None)
@@ -426,6 +466,63 @@ def logout():
             msg="注销成功",
             data=None,
         )
+
+
+@app.route("/translation/history", methods=['GET'])
+def get_translation_history():
+    if request.method == 'GET':
+        if 'username' not in session or 'uid' not in session:
+            return jsonify(
+                result=True,
+                code=200,
+                msg="查询成功",
+                data=[],
+            )
+        else:
+            rst = query_db(
+                '''SELECT * FROM translations WHERE user_id=?''',
+                args=[session['uid']],
+            )
+            history_list = []
+            for r in rst:
+                history_list.append({
+                    'id': r['id'],
+                    'source': r['source'],
+                    'target': r['target'],
+                    'created_at': r['created_at']
+                })
+            return jsonify(
+                result=True,
+                code=200,
+                msg="查询成功",
+                data=history_list,
+            )
+
+
+@app.route("/translation/history/delete", methods=['POST'])
+def delete_translation_history():
+    if request.method == 'POST':
+        if 'username' not in session or 'uid' not in session:
+            return jsonify(
+                result=False,
+                code=400,
+                msg="未登录",
+                data=None,
+            )
+        else:
+            uid = session['uid'];
+            data = request.get_json()
+            id_del = data['id']
+            rst = insert_db(
+                '''DELETE FROM translations WHERE id=? AND user_id=?''',
+                args=[id_del, uid],
+            )
+            return jsonify(
+                result=True,
+                code=200,
+                msg="删除成功",
+                data=None,
+            )
 
 
 if __name__ == '__main__':
