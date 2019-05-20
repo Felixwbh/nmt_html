@@ -174,13 +174,119 @@ def handle_translatehtml():
         def findsentesnce(i):
             num = i
             sentence = ""
-            while test[i] != '<':
+            flag = 0
+            while True:
+                if test[i] == '<':
+                    if test[i+1] == 'b' and test[i+2] == '>':
+                        sentence += '<'
+                        i += 1
+                        flag = 1
+                        continue
+                    elif test[i+1] == '/' and test[i+2] == 'b' and test[i+3] == '>':
+                        sentence += '<'
+                        i += 1
+                        flag = 1
+                        continue
+                    elif test[i+1] == 'b' and test[i+2] == 'i' and test[i+3] == 'g' and test[i+4] == '>':
+                        sentence += '<'
+                        i += 1
+                        flag = 1
+                        continue
+                    elif test[i+1] == '/' and test[i+2] == 'b' and test[i+3] == 'i' and test[i+4] == 'g' and test[i+5] == '>':
+                        sentence += '<'
+                        i += 1
+                        flag = 1
+                        continue
+                    elif test[i+1] == 'e' and test[i+2] == 'm' and test[i+3] == '>':
+                        sentence += '<'
+                        i += 1
+                        flag = 1
+                        continue
+                    elif test[i+1] == '/' and test[i+2] == 'e' and test[i+3] == 'm' and test[i+4] == '>':
+                        sentence += '<'
+                        i += 1
+                        flag = 1
+                        continue
+                    elif test[i + 1] == 'i' and test[i + 2] == '>':
+                        sentence += '<'
+                        i += 1
+                        flag = 1
+                        continue
+                    elif test[i + 1] == '/' and test[i + 2] == 'i' and test[i + 3] == '>':
+                        sentence += '<'
+                        i += 1
+                        flag = 1
+                        continue
+                    elif test[i+1] == 's' and test[i+2] == 'm' and test[i+3] == 'a' and test[i+4] == 'l' and test[i+5] == 'l' and test[i+6] == '>':
+                        sentence += '<'
+                        i += 1
+                        flag = 1
+                        continue
+                    elif test[i+1] == '/' and test[i+2] == 's' and test[i+3] == 'm' and test[i+4] == 'a' and test[i+5] == 'l' and test[i+6] == 'l' and test[i+7] == '>':
+                        sentence += '<'
+                        i += 1
+                        flag = 1
+                        continue
+                    elif test[i+1] == 's' and test[i+2] == 't' and test[i+3] == 'r' and test[i+4] == 'o' and test[i+5] == 'n' and test[i+6] == 'g' and test[i+7] == '>':
+                        sentence += '<'
+                        i += 1
+                        flag = 1
+                        continue
+                    elif test[i+1] == '/' and test[i+2] == 's' and test[i+3] == 't' and test[i+4] == 'r' and test[i+5] == 'o' and test[i+6] == 'n' and test[i+7] == 'g':
+                        sentence += '<'
+                        i += 1
+                        flag = 1
+                        continue
+                    elif test[i+1] == 's' and test[i+2] == 'u' and test[i+3] == 'p' and test[i+4] == '>':
+                        sentence += '<'
+                        i += 1
+                        flag = 1
+                        continue
+                    elif test[i+1] == '/' and test[i+2] == 's' and test[i+3] == 'u' and test[i+4] == 'p' and test[i+5] == '>':
+                        sentence += '<'
+                        i += 1
+                        flag = 1
+                        continue
+                    elif test[i+1] == 's' and test[i+2] == 'u' and test[i+3] == 'b' and test[i+4] == '>':
+                        sentence += '<'
+                        i += 1
+                        flag = 1
+                        continue
+                    elif test[i+1] == '/' and test[i+2] == 's' and test[i+3] == 'u' and test[i+4] == 'b' and test[i+5] == '>':
+                        sentence += '<'
+                        i += 1
+                        flag = 1
+                        continue
+                    elif test[i+1] == 'i' and test[i+2] == 'n' and test[i+3] == 's' and test[i+4] == '>':
+                        sentence += '<'
+                        i += 1
+                        flag = 1
+                        continue
+                    elif test[i+1] == '/' and test[i+2] == 'i' and test[i+3] == 'n' and test[i+4] == 's' and test[i+5] == '>':
+                        sentence += '<'
+                        i += 1
+                        flag = 1
+                        continue
+                    elif test[i+1] == 'd' and test[i+2] == 'e' and test[i+3] == 'l' and test[i+4] == '>':
+                        sentence += '<'
+                        i += 1
+                        flag = 1
+                        continue
+                    elif test[i+1] == '/' and test[i+2] == 'd' and test[i+3] == 'e' and test[i+4] == 'l' and test[i+5] == '>':
+                        sentence += '<'
+                        i += 1
+                        flag = 1
+                        continue
+                    else:
+                        break
                 sentence += test[i]
-                i += 1
-            # print(sentence)
+                i+=1
             pretrans.append(sentence)
             translate = sentence
-            ans.append(int(1))
+            if flag == 1:
+                ans.append(int(2))
+            else:
+                ans.append(int(1))
             answer.write(translate)
             return i - num
 
@@ -198,7 +304,6 @@ def handle_translatehtml():
                         j -= 1
                     if (test[j] == '<' and test[j + 1] == 's' and test[j + 2] == 'c' and test[j + 3] == 'r' and test[
                         j + 4] == 'i' and test[j + 5] == 'p' and test[j + 6] == 't'):
-                        # if(test[i-7]=='<' and test[i-6] == 's' and test[i-5] == 'c' and test[i-4] == 'r' and test[i-3] == 'i' and test[i-2] == 'p' and test[i-1] == 't'):
                         i += 1
                         while (test[i - 8] != '<' or test[i - 7] != '/' or test[i - 6] != 's' or test[i - 5] != 'c' or
                                test[i - 4] != 'r' or test[i - 3] != 'i' or test[i - 2] != 'p' or test[i - 1] != 't'):
@@ -249,42 +354,31 @@ def handle_translatehtml():
             pre_input = []
             results = []
             prealign = []
-            #print(len(pretrans))
-            #print(pretrans)
             for sen in range(0,len(pretrans)):
                 pre_input.append(preprocess1(pretrans[sen]))
-            #print(pre_input)
-            #print(len(pre_input))
             for sen in range(0,len(pre_input)):
-                #print(pre_input[sen])
                 result = translate(task, align_dict, models, tgt_dict, translator, args, use_cuda, pre_input[sen])
-                #print(result)
                 tmp = result[0].hypos[0].split('\t')[2]
                 results.append(tmp)
                 tmpstring = ""
-                tmpstring += str(pre_input[sen]) + "|||" + str(tmp)
+                tmpstring += str(pre_input[sen]) + " ||| " + str(tmp)
                 prealign.append(tmpstring)
-            print(prealign)
             batchalign = align_batch(prealign)
-            print(batchalign)
-            #print(len(results))
             y = 0
             ans1 =""
             for x in range(0, len(ans)):
-                if ans[x] == 1:
+                if ans[x] == 1 :
                     ans[x] = results[y]
+                    y += 1
+                elif ans[x] == 2:
+                    #print(results[y])
+                    ans[x] = processone(pretrans[y],batchalign[y],results[y])
+                    #print(ans[x])
                     y += 1
             for x in ans:
                 ans1 += str(x)
             return ans1
-            #pre_input = preprocess(pretrans)
-            #results=translate(pre_input)
-            #add()
-            #salign()
-            #delete()
 
-        #print(len(pretrans))
-        #print(pretrans)
         end = tranhtml(pretrans, ans)
         return jsonify(
             result=True,
@@ -294,6 +388,8 @@ def handle_translatehtml():
         )
     else:
         return abort(403)
+
+
 
 # ================== Auth ==================
 
