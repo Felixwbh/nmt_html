@@ -81,3 +81,39 @@ def backprocess(input:str, val) -> str:
                 trans += "< / " + test[i][j] + "> "
     test = []
     return trans
+
+def processone(sentence, align, input):
+    sentence_p, val = preprocess(sentence)
+    traval = input.strip().split()
+    strr = align
+    test = []
+    trans = ""
+    for i in range(0, len(traval)):
+        test.append([])
+    for vall in val:
+        tmpval = []
+        tmpval.append(vall[0])
+        for i in vall[2:]:
+            for align in strr.split():
+                tmp = align.split('-')
+                tmp1 =tmp[0]
+                tmp2 =tmp[1]
+                if int(i) == int(tmp1) :
+                    if tmpval[0] not in test[int(tmp2)]:
+                        test[int(tmp2)].append(tmpval[0])
+    for i in range(0, len(test)):
+        if test[i] == []:
+            trans += traval[i]+" "
+            #print(traval[i]+" ",end='')
+        else:
+            for j in range(0, len(test[i])):
+                #print("< " + test[i][j] + " > ",end='')
+                trans += "< " + test[i][j] + "> "
+            #print(traval[i],end='')
+            trans += traval[i]
+            for j in range(len(test[i])-1, -1, -1):
+                #print("< / " + test[i][j] + " > ",end='')
+                trans += "< / " + test[i][j] + "> "
+    test = []
+    print(trans)
+    return trans
