@@ -10,9 +10,13 @@ def add(pre_input, pre_trans):
     e.close()
 
 def add1(pre_input, pre_trans):
-    e = open("./fast_align/9999.c", "a", encoding='utf-8')
+    c = open("./fast_align/9999.c", "a", encoding='utf-8')
+    e = open("./fast_align/9999.e", "a", encoding='utf-8')
+    print(pre_input)
+    print(pre_trans)
+    print(len(pre_input))
+    print(len(pre_trans))
     e.write(pre_input)
-    c = open("./fast_align/9999.e", "a", encoding='utf-8')
     c.write(pre_trans)
     c.close()
     e.close()
