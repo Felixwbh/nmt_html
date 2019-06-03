@@ -189,7 +189,7 @@ def translate(task, align_dict, models, tgt_dict, translator, args, use_cuda, pr
             # print(result.alignments)
             # print(wbh)
     return results
-    
+
 
 def interactive():
     sys.argv += ['--path', './fairseqq/checkpoints/fconv_wmt_c_e/checkpoint_best.pt', '--source-lang', 'c', '--target-lang', 'e', '--print-alignment', './fairseqq/data-bin/']
@@ -203,6 +203,14 @@ def interactive():
 
 def load_model():
     sys.argv += ['--path', './fairseqq/checkpoints/fconv_wmt_c_e/checkpoint_best.pt', '--source-lang', 'c', '--target-lang', 'e', '--print-alignment', './fairseqq/data-bin/']
+    parser = options.get_generation_parser(interactive=True)
+    args = options.parse_args_and_arch(parser)
+    task, align_dict, models, tgt_dict, translator, use_cuda=load(args)
+    return task, align_dict, models, tgt_dict, translator, use_cuda, args
+
+def load_model1():
+    sys.argv.clear()
+    sys.argv += ['app.py', '--path', './fairseqq/checkpoints/fconv_wmt_e_c/checkpoint_best.pt', '--source-lang', 'e', '--target-lang', 'c', '--print-alignment',  './fairseqq/data-bin1/']
     parser = options.get_generation_parser(interactive=True)
     args = options.parse_args_and_arch(parser)
     task, align_dict, models, tgt_dict, translator, use_cuda=load(args)
